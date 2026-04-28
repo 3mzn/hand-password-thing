@@ -47,6 +47,7 @@ class GestureCapture:
         self._current_gesture_idx: int = 0
         self._pre_countdown_start: float = 0.0
         self._pre_countdown_active: bool = False
+        self._waiting_for_start: bool = True  # New: wait for SPACE key
         self._PRE_COUNTDOWN_SEC: float = 1.5
 
     def capture_gesture_password(self, mode: str) -> Optional[list[int]]:
@@ -65,8 +66,8 @@ class GestureCapture:
 
         self._gesture_buffer.clear()
         self._current_gesture_idx = 0
-        self._pre_countdown_active = True
-        self._pre_countdown_start = time.time()
+        self._waiting_for_start = True  # Reset to waiting state
+        self._pre_countdown_active = False
 
         logger.info("Starting gesture capture in %s mode", mode)
 
@@ -83,6 +84,13 @@ class GestureCapture:
 
                     cv2.imshow(WINDOW_NAME, frame)
                     key = cv2.waitKey(1) & 0xFF
+                    
+                    # Check for SPACE key to start capture
+                    if self._waiting_for_start and key == ord(" "):
+                        logger.info("User pressed SPACE - starting capture")
+                        self._waiting_for_start = False
+                        self._pre_countdown_active = True
+                        self._pre_countdown_start = time.time()
                     
                     if key == ord("q") or key == ord("Q"):
                         logger.info("Gesture capture cancelled by user")
@@ -136,6 +144,11 @@ class GestureCapture:
             mode: Either "enroll" or "verify"
         """
         mode_label = "Enroll" if mode == "enroll" else "Verify"
+
+        # Waiting for user to press SPACE to start
+        if self._waiting_for_start:
+            draw_status(frame, "Press SPACE to start capture, Q to quit", COLOR_YELLOW)
+            return
 
         # Pre-countdown pause between gestures
         if self._pre_countdown_active:
