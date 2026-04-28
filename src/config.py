@@ -29,3 +29,25 @@ COLOR_BLACK = (0, 0, 0)
 COLOR_DARK_BG = (30, 30, 30)
 COLOR_ACCENT = (255, 160, 0)
 COLOR_YELLOW = (0, 230, 255)
+
+# File encryption settings
+MAX_FILE_SIZE: int = 100 * 1024 * 1024  # 100MB in bytes
+REGISTRY_FILE: str = "encrypted_files.json"
+
+# System file protection
+SYSTEM_DIRS: list[str] = [
+    r"C:\Windows",
+    r"C:\Program Files",
+    r"C:\Program Files (x86)",
+    r"System32"
+]
+
+SYSTEM_EXTENSIONS: list[str] = [
+    ".exe",
+    ".dll",
+    ".sys",
+    ".bat",
+    ".cmd",
+    ".ps1",
+    ".msi"
+]

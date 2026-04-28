@@ -97,3 +97,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# File Encryption Manager - user data
+encrypted_files.json
+*.enc

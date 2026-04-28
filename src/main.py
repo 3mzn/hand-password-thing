@@ -1,5 +1,9 @@
 """
-Gesture Lock — Main entry point and state machine.
+Gesture Lock — Main entry point and state machine (LEGACY SYSTEM).
+
+NOTE: This is the original single-password gesture authentication system.
+For the new multi-file encryption manager, use src/app.py instead.
+See MIGRATION_GUIDE.md for details on the differences between systems.
 
 States:
     IDLE       →  Show instructions; press E to enroll, V to verify
