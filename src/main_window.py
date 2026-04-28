@@ -339,21 +339,49 @@ class MainWindow:
                 return
         
         # Step 2: Validate the file (validation is done inside encrypt_file)
-        # Step 3: Capture gesture password for enrollment
+        # Step 3: Capture gesture password for enrollment with confirmation loop
         logger.info("Starting gesture password enrollment")
-        try:
-            gesture_password = self.gesture_capture.capture_gesture_password("enroll")
-        except Exception as e:
-            self.show_error(f"Gesture capture failed: {str(e)}")
-            logger.error(f"Gesture capture error: {str(e)}")
-            return
         
-        if gesture_password is None:
-            # User cancelled gesture capture
-            self.show_info("Gesture capture cancelled")
-            return
-        
-        logger.info("Gesture password captured successfully")
+        while True:  # Loop for re-enrollment
+            try:
+                gesture_password = self.gesture_capture.capture_gesture_password("enroll")
+            except Exception as e:
+                self.show_error(f"Gesture capture failed: {str(e)}")
+                logger.error(f"Gesture capture error: {str(e)}")
+                return
+            
+            if gesture_password is None:
+                # User cancelled gesture capture
+                self.show_info("Gesture capture cancelled")
+                return
+            
+            logger.info("Gesture password captured successfully")
+            
+            # Format gesture sequence for display
+            gesture_names = ["Fist", "One", "Two", "Three", "Four", "Five"]
+            gesture_sequence = [gesture_names[idx] for idx in gesture_password]
+            sequence_display = ", ".join(gesture_sequence)
+            
+            # Show confirmation dialog with re-enrollment option
+            confirmation_msg = f"Your gesture sequence is:\n\n{sequence_display}\n\nDo you want to enroll this password?"
+            result = messagebox.askyesnocancel(
+                "Confirm Enrollment",
+                confirmation_msg,
+                detail="Click 'Yes' to confirm, 'No' to capture again, or 'Cancel' to abort"
+            )
+            
+            if result is True:
+                # User confirmed - proceed with encryption
+                logger.info("User confirmed gesture password enrollment")
+                break
+            elif result is False:
+                # User wants to re-enroll - loop continues
+                logger.info("User chose to re-enroll gesture password")
+                continue
+            else:
+                # User cancelled (None)
+                self.show_info("Enrollment cancelled")
+                return
         
         # Step 4: Encrypt the file using FileEncryptionManager
         success, message = self.file_encryption_manager.encrypt_file(file_path, gesture_password)
