@@ -318,20 +318,35 @@ class MainWindow:
         logger.info(f"User selected file: {file_path}")
         
         # Import here to avoid circular dependencies
-        from src.file_encryption_manager import FileEncryptionManager
-        from src.gesture_capture import GestureCapture
+        try:
+            from src.file_encryption_manager import FileEncryptionManager
+            from src.gesture_capture import GestureCapture
+        except ImportError as e:
+            self.show_error(f"Failed to import required modules: {str(e)}\n\nPlease ensure all dependencies are installed:\npip install -r requirements.txt")
+            logger.error(f"Import error: {str(e)}")
+            return
         
         # Ensure we have the required components
         if self.file_encryption_manager is None:
             self.file_encryption_manager = FileEncryptionManager()
         
         if self.gesture_capture is None:
-            self.gesture_capture = GestureCapture()
+            try:
+                self.gesture_capture = GestureCapture()
+            except Exception as e:
+                self.show_error(f"Failed to initialize gesture capture: {str(e)}\n\nPlease ensure MediaPipe is installed correctly:\npip install mediapipe>=0.10.0")
+                logger.error(f"GestureCapture initialization error: {str(e)}")
+                return
         
         # Step 2: Validate the file (validation is done inside encrypt_file)
         # Step 3: Capture gesture password for enrollment
         logger.info("Starting gesture password enrollment")
-        gesture_password = self.gesture_capture.capture_gesture_password("enroll")
+        try:
+            gesture_password = self.gesture_capture.capture_gesture_password("enroll")
+        except Exception as e:
+            self.show_error(f"Gesture capture failed: {str(e)}")
+            logger.error(f"Gesture capture error: {str(e)}")
+            return
         
         if gesture_password is None:
             # User cancelled gesture capture

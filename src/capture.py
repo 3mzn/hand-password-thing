@@ -20,28 +20,10 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-try:
-    import mediapipe as mp
-    try:
-        mp_hands = mp.solutions.hands
-        mp_drawing = mp.solutions.drawing_utils
-        mp_drawing_styles = mp.solutions.drawing_styles
-    except AttributeError:
-        # Fallback for newer or fragmented Mediapipe installations
-        from mediapipe.python.solutions import hands as mp_hands
-        from mediapipe.python.solutions import drawing_utils as mp_drawing
-        from mediapipe.python.solutions import drawing_styles as mp_drawing_styles
-except (ImportError, AttributeError) as e:
-    logger.error("Failed to import MediaPipe solutions: %s", e)
-    # Final fallback attempt
-    try:
-        import mediapipe.solutions.hands as mp_hands
-        import mediapipe.solutions.drawing_utils as mp_drawing
-        import mediapipe.solutions.drawing_styles as mp_drawing_styles
-    except ImportError:
-        raise ImportError(
-            "Could not find MediaPipe solutions. Please ensure mediapipe is installed correctly."
-        ) from e
+# Import MediaPipe solutions
+mp_hands = mp.solutions.hands
+mp_drawing = mp.solutions.drawing_utils
+mp_drawing_styles = mp.solutions.drawing_styles
 
 
 @dataclass
