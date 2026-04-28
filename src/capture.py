@@ -20,10 +20,29 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-# Import MediaPipe solutions
-mp_hands = mp.solutions.hands
-mp_drawing = mp.solutions.drawing_utils
-mp_drawing_styles = mp.solutions.drawing_styles
+# Import MediaPipe solutions with fallback for different installation types
+try:
+    # Standard import path (works for most installations)
+    mp_hands = mp.solutions.hands
+    mp_drawing = mp.solutions.drawing_utils
+    mp_drawing_styles = mp.solutions.drawing_styles
+except AttributeError:
+    # Fallback for installations where solutions is not directly accessible
+    try:
+        from mediapipe.python.solutions import hands as mp_hands
+        from mediapipe.python.solutions import drawing_utils as mp_drawing
+        from mediapipe.python.solutions import drawing_styles as mp_drawing_styles
+    except ImportError:
+        # Final fallback - direct module import
+        try:
+            import mediapipe.solutions.hands as mp_hands
+            import mediapipe.solutions.drawing_utils as mp_drawing
+            import mediapipe.solutions.drawing_styles as mp_drawing_styles
+        except ImportError as e:
+            raise ImportError(
+                f"Could not import MediaPipe solutions. MediaPipe version: {mp.__version__}. "
+                "Please reinstall mediapipe: pip uninstall mediapipe && pip install mediapipe"
+            ) from e
 
 
 @dataclass
