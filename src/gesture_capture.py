@@ -16,42 +16,23 @@ from typing import Optional
 import cv2
 import numpy as np
 
-try:
-    from src.capture import HandCapture
-    from src.config import (
-        CAPTURE_DURATION_SEC,
-        COLOR_BLUE,
-        COLOR_RED,
-        COLOR_YELLOW,
-        NUM_GESTURES,
-        WINDOW_NAME,
-    )
-    from src.gesture import classify_gesture, detect_finger_states
-    from src.ui import (
-        draw_finger_states,
-        draw_gesture_index,
-        draw_hand_missing_warning,
-        draw_progress_bar,
-        draw_status,
-    )
-except ImportError:
-    from capture import HandCapture
-    from config import (
-        CAPTURE_DURATION_SEC,
-        COLOR_BLUE,
-        COLOR_RED,
-        COLOR_YELLOW,
-        NUM_GESTURES,
-        WINDOW_NAME,
-    )
-    from gesture import classify_gesture, detect_finger_states
-    from ui import (
-        draw_finger_states,
-        draw_gesture_index,
-        draw_hand_missing_warning,
-        draw_progress_bar,
-        draw_status,
-    )
+from src.capture import HandCapture
+from src.config import (
+    CAPTURE_DURATION_SEC,
+    COLOR_BLUE,
+    COLOR_RED,
+    COLOR_YELLOW,
+    NUM_GESTURES,
+    WINDOW_NAME,
+)
+from src.gesture import classify_gesture, detect_finger_states
+from src.ui import (
+    draw_finger_states,
+    draw_gesture_index,
+    draw_hand_missing_warning,
+    draw_progress_bar,
+    draw_status,
+)
 
 logger = logging.getLogger(__name__)
 

@@ -22,17 +22,17 @@ logger = logging.getLogger(__name__)
 
 # Import MediaPipe solutions with fallback for different installation types
 try:
-    # Standard import path (works for most installations)
-    mp_hands = mp.solutions.hands
-    mp_drawing = mp.solutions.drawing_utils
-    mp_drawing_styles = mp.solutions.drawing_styles
-except AttributeError:
-    # Fallback for installations where solutions is not directly accessible
+    # Try mediapipe.python.solutions first (common in some installations)
+    from mediapipe.python.solutions import hands as mp_hands
+    from mediapipe.python.solutions import drawing_utils as mp_drawing
+    from mediapipe.python.solutions import drawing_styles as mp_drawing_styles
+except (ImportError, ModuleNotFoundError):
     try:
-        from mediapipe.python.solutions import hands as mp_hands
-        from mediapipe.python.solutions import drawing_utils as mp_drawing
-        from mediapipe.python.solutions import drawing_styles as mp_drawing_styles
-    except ImportError:
+        # Standard import path (works for most installations)
+        mp_hands = mp.solutions.hands
+        mp_drawing = mp.solutions.drawing_utils
+        mp_drawing_styles = mp.solutions.drawing_styles
+    except AttributeError:
         # Final fallback - direct module import
         try:
             import mediapipe.solutions.hands as mp_hands
